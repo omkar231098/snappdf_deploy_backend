@@ -78,7 +78,11 @@ const login = async (req, res) => {
 
     const accessToken = generateToken(user);
 
-    res.cookie('authtoken', accessToken)
+    res.cookie('authtoken', accessToken, {
+      secure: true,   // Ensures the cookie is sent only over HTTPS
+      httpOnly: true,  // Prevents client-side access to the cookie
+      sameSite: 'None' // Allows cross-site requests for modern browsers
+    });
 
     res.status(200).json({
       status: true,
