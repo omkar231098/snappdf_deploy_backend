@@ -23,7 +23,7 @@ for (const variable of requiredEnvVariables) {
 }
 // app.use(cors());
 app.use(cors({
-  origin: 'https://frontend-83p9jbiml-omkar231098.vercel.app',
+  origin: 'https://frontend-k2p3gn9dk-omkar231098.vercel.app',
   credentials: true,
 }));
 // app.use(cors(corsOptions));
