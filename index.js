@@ -12,6 +12,29 @@ app.use(express.json({ limit: '50mb' }));
 require("dotenv").config();
 app.use(cookieParser());
 
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://frontend-k2p3gn9dk-omkar231098.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
+
+app.use(cors({
+  origin: 'https://frontend-k2p3gn9dk-omkar231098.vercel.app',
+  credentials: true,
+}));
+
+
+// app.use(cors(corsOptions));
+app.use("/auth",auth);
+app.use("/pdf",PdfRouter);
+
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+
+
+
 // Check for required environment variables
 const requiredEnvVariables = ['DATABASE_URL', 'PORT',"SECRET_KEY"]; // Add your required variables here
 
@@ -22,17 +45,6 @@ for (const variable of requiredEnvVariables) {
   }
 }
 // app.use(cors());
-app.use(cors({
-  origin: 'https://frontend-k2p3gn9dk-omkar231098.vercel.app',
-  credentials: true,
-}));
-// app.use(cors(corsOptions));
-app.use("/auth",auth);
-app.use("/pdf",PdfRouter);
-
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-
-
 
 
 
