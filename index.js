@@ -23,7 +23,7 @@ for (const variable of requiredEnvVariables) {
 }
 // app.use(cors());
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'https://frontend-9fqons2k4-omkar231098.vercel.app/',
   credentials: true,
 }));
 // app.use(cors(corsOptions));
