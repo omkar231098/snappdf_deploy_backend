@@ -7,6 +7,11 @@ const PDFDocument = require('pdfkit');
 
 
 const CreatePDF = async (req, res) => {
+
+   // Set CORS headers to allow cross-origin requests
+   res.setHeader('Access-Control-Allow-Origin', 'https://frontend-k2p3gn9dk-omkar231098.vercel.app');
+   res.setHeader('Access-Control-Allow-Credentials', 'true');
+ 
   const userID = req.userId;
 
   try {
