@@ -8,6 +8,11 @@ const { auth } = require("./Routes/auth.route");
 const { connection } = require("./Config/db");
 
 const app = express();
+app.use(cors({
+  origin: '*',
+  credentials: true,
+}));
+
 app.use(express.json({ limit: '50mb' }));
 require("dotenv").config();
 app.use(cookieParser());
@@ -15,17 +20,9 @@ app.use(cookieParser());
 // Check for required environment variables
 const requiredEnvVariables = ['DATABASE_URL', 'PORT',"SECRET_KEY"]; // Add your required variables here
 
-for (const variable of requiredEnvVariables) {
-  if (!process.env[variable]) {
-    console.error(`Error: Missing required environment variable: ${variable}`);
-    process.exit(1); // Exit the process with an error code
-  }
-}
+
 // app.use(cors());
-app.use(cors({
-  origin: '*',
-  credentials: true,
-}));
+
 // app.use(cors(corsOptions));
 app.use("/auth",auth);
 app.use("/pdf",PdfRouter);
@@ -34,7 +31,12 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 
 
-
+for (const variable of requiredEnvVariables) {
+  if (!process.env[variable]) {
+    console.error(`Error: Missing required environment variable: ${variable}`);
+    process.exit(1); // Exit the process with an error code
+  }
+}
 
 
 const port = process.env.PORT || 8500;
