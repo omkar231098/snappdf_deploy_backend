@@ -12,14 +12,14 @@ app.use(cookieParser());
 
 // CORS setup
 app.use(cors({
-  origin: 'https://frontend-1pc92u079-omkar231098.vercel.app',
+  origin: '*',
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Handling pre-flight requests
 app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'https://frontend-1pc92u079-omkar231098.vercel.app');
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.sendStatus(200);
