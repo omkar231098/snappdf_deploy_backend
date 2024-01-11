@@ -14,15 +14,16 @@ app.use(cookieParser());
 
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://frontend-k2p3gn9dk-omkar231098.vercel.app');
+  res.header('Access-Control-Allow-Origin', 'https://frontend-1pc92u079-omkar231098.vercel.app');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   next();
 });
 
 app.use(cors({
-  origin: 'https://frontend-k2p3gn9dk-omkar231098.vercel.app',
+  origin: 'https://frontend-1pc92u079-omkar231098.vercel.app',
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 
