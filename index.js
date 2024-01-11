@@ -8,11 +8,11 @@ const { auth } = require("./Routes/auth.route");
 const { connection } = require("./Config/db");
 
 const app = express();
-app.use(cors({
-  origin: '*',
-  credentials: true,
-}));
-
+// app.use(cors({
+//   origin: '*',
+//   credentials: true,
+// }));
+app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 require("dotenv").config();
 app.use(cookieParser());
@@ -21,7 +21,7 @@ app.use(cookieParser());
 const requiredEnvVariables = ['DATABASE_URL', 'PORT',"SECRET_KEY"]; // Add your required variables here
 
 
-// app.use(cors());
+
 
 // app.use(cors(corsOptions));
 app.use("/auth",auth);
