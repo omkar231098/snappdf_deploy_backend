@@ -10,7 +10,7 @@ const CreatePDF = async (req, res) => {
 
    // Set CORS headers to allow cross-origin requests
  
-   res.setHeader('Access-Control-Allow-Credentials', 'true');
+  //  res.setHeader('Access-Control-Allow-Credentials', 'true');
  
   const userID = req.userId;
 
