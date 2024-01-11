@@ -1,30 +1,32 @@
-const getLogger = require('../Logger/logger'); // Update the path based on your actual file structure
-const logger = getLogger('auth'); // Provide the route name, e.g., 'auth' for authentication routes
+const getLogger = require('../Logger/logger');
+const logger = getLogger('auth');
 const { PdfModel } = require('../Model/pdf.model');
 const { UserModel } = require('../Model/user.model');
 const multer = require('multer');
+const Grid = require('gridfs-stream');
+const mongoose = require('mongoose');
 const PDFDocument = require('pdfkit');
 
+// Create mongoose connection
+const connection = mongoose.connection;
+
+// Initialize GridFS
+Grid.mongo = mongoose.mongo;
+let gfs;
+
+connection.once('open', () => {
+  gfs = Grid(connection.db);
+});
 
 const CreatePDF = async (req, res) => {
-
-   // Set CORS headers to allow cross-origin requests
- 
-  //  res.setHeader('Access-Control-Allow-Credentials', 'true');
- 
   const userID = req.userId;
 
   try {
     const upload = multer({
-      storage: multer.diskStorage({
-        destination: (req, file, cb) => {
-          cb(null, 'uploads/');
-        },
-        filename: (req, file, cb) => {
-          cb(null, file.originalname);
-        },
-      }),
-      
+      storage: multer.memoryStorage(), // Store file in memory buffer for streaming to GridFS
+      limits: {
+        fileSize: 50 * 1024 * 1024, // 50 MB
+      },
     }).single('photo');
 
     // Call the Multer middleware to handle file upload
@@ -39,40 +41,51 @@ const CreatePDF = async (req, res) => {
         return res.status(400).send('No file uploaded');
       }
 
-      // Save data to MongoDB
-      const newData = new PdfModel({
-        name: req.body.name,
-        age: req.body.age,
-        address: req.body.address,
-        photo: req.file.filename,
-        user: userID,
+      // Create a file stream for storing in GridFS
+      const writestream = gfs.createWriteStream({
+        filename: req.file.originalname,
+        metadata: {
+          user: userID,
+        },
       });
 
-      await newData.save();
-      await UserModel.findByIdAndUpdate(userID, { $push: { pdfs: newData._id } });
+      // Pipe the file buffer to the GridFS stream
+      writestream.write(req.file.buffer);
+      writestream.end();
 
-      // Generate PDF
-      const pdfDoc = new PDFDocument();
+      writestream.on('close', async (file) => {
+        // Save data to MongoDB
+        const newData = new PdfModel({
+          name: req.body.name,
+          age: req.body.age,
+          address: req.body.address,
+          photo: file._id, // Store the GridFS file ID
+          user: userID,
+        });
 
-      // Handle 'error' event to ensure proper error logging
-      pdfDoc.on('error', (error) => {
-        console.error('PDF generation error:', error);
-        res.status(500).send('PDF generation error');
+        await newData.save();
+        await UserModel.findByIdAndUpdate(userID, { $push: { pdfs: newData._id } });
+
+        // Generate PDF
+        const pdfDoc = new PDFDocument();
+
+        // Handle 'error' event to ensure proper error logging
+        pdfDoc.on('error', (error) => {
+          console.error('PDF generation error:', error);
+          res.status(500).send('PDF generation error');
+        });
+
+        // Pipe the PDF stream to the response
+        res.setHeader('Content-Disposition', `attachment; filename=${newData.name}_details.pdf`);
+        res.setHeader('Content-Type', 'application/pdf');
+        const readstream = gfs.createReadStream({ _id: newData.photo });
+        readstream.pipe(pdfDoc).pipe(res);
       });
 
-      // Pipe the PDF stream to the response
-      res.setHeader('Content-Disposition', `attachment; filename=${newData.name}_details.pdf`);
-      res.setHeader('Content-Type', 'application/pdf');
-      pdfDoc.pipe(res);
-
-      pdfDoc.text(`Name: ${newData.name}`);
-      pdfDoc.text(`Age: ${newData.age}`);
-      pdfDoc.text(`Address: ${newData.address}`);
-      pdfDoc.image(`uploads/${newData.photo}`, { width: 200 });
-
-      
-
-      pdfDoc.end(); // Close the PDF stream
+      writestream.on('error', (error) => {
+        console.error('GridFS write stream error:', error);
+        res.status(500).send('GridFS write stream error');
+      });
     });
   } catch (error) {
     logger.error(`Internal Server Error: ${error.message}`);
@@ -80,14 +93,5 @@ const CreatePDF = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
-
-
-
-
-
-
-
-
-
 
 module.exports = { CreatePDF };
