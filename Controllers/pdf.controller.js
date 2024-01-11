@@ -24,9 +24,7 @@ const CreatePDF = async (req, res) => {
           cb(null, file.originalname);
         },
       }),
-      limits: {
-        fileSize: 50 * 1024 * 1024, // 50 MB
-      },
+      
     }).single('photo');
 
     // Call the Multer middleware to handle file upload
