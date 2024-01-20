@@ -73,7 +73,7 @@ const login = async (req, res) => {
 
     if (!isPasswordMatch) {
       logger.error(`Invalid credentials for user: ${username}`);
-      return res.status(400).json({ status: false, message: 'Invalid Credentials' });
+      return res.status(400).json({ status: false, message: 'Incorrect Password' });
     }
 
     const accessToken = generateToken(user);
