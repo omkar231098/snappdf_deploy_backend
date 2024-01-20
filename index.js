@@ -1,21 +1,19 @@
 const express = require("express");
 const cors = require("cors");
-const cookieParser = require('cookie-parser');
-
-
+// const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const app = express();
 const { PdfRouter } = require("./Routes/pdf.route");
 const { auth } = require("./Routes/auth.route");
 const { connection } = require("./Config/db");
 
-const app = express();
-// app.use(cors({
-//   origin: '*',
-//   credentials: true,
-// }));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
+
 require("dotenv").config();
-app.use(cookieParser());
+// app.use(cookieParser());
 
 // Check for required environment variables
 const requiredEnvVariables = ['DATABASE_URL', 'PORT',"SECRET_KEY"]; // Add your required variables here
