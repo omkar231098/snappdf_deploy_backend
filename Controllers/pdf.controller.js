@@ -42,7 +42,7 @@ const CreatePDF = async (req, res) => {
 
       // Send the PDF buffer as response
       res.setHeader('Content-Type', 'application/octet-stream');
-      res.status(200).res.send(pdfBuffer)
+   res.send(pdfBuffer)
        
       
      
