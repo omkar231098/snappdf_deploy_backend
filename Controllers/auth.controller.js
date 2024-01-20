@@ -66,7 +66,7 @@ const login = async (req, res) => {
 
     if (!user) {
       logger.error(`User not found for login attempt: ${username}`);
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ status: false,message: 'User not found' });
     }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
@@ -82,7 +82,7 @@ const login = async (req, res) => {
 
     res.status(200).json({
       status: true,
-      alertMessage: 'Successfully logged in', // Ensure alertMessage is sent
+      message: 'Successfully logged in', // Ensure alertMessage is sent
     });
   } catch (error) {
     logger.error(`Login failed: ${error}`);
