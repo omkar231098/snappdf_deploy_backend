@@ -42,8 +42,8 @@ const CreatePDF = async (req, res) => {
 
       // Send the PDF buffer as response
       res.setHeader('Content-Type', 'application/octet-stream');
-      res.status(200).res.send({pdfBuffer, status: true,
-        message: 'PDF Created Successfully'})
+      res.status(200).res.send(pdfBuffer)
+       
       
      
   } catch (error) {
