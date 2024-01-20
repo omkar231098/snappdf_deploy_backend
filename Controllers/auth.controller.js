@@ -1,4 +1,4 @@
-const getLogger = require('../Logger/logger'); // Update the path based on your actual file structure
+const getLogger = require('../Logger/logger')
 const logger = getLogger('auth'); // Provide the route name, e.g., 'auth' for authentication routes
 const { UserModel } = require('../Model/user.model');
 const bcrypt = require('bcrypt');
