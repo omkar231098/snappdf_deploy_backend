@@ -35,6 +35,10 @@ const CreatePDF = async (req, res) => {
       const pdf = new PdfModel({ name, age, address, photo: pdfBuffer.toString('base64') });
       await pdf.save();
 
+      res.status(200).json({
+        status: true,
+        message: 'PDF Created Successfully', // Ensure alertMessage is sent
+      });
       // Update the user's pdfs array with the new PDF
      
       
