@@ -82,7 +82,8 @@ const login = async (req, res) => {
 
     res.status(200).json({
       status: true,
-      message: 'Successfully logged in', // Ensure alertMessage is sent
+      message: 'Successfully logged in',
+      accessToken // Ensure alertMessage is sent
     });
   } catch (error) {
     logger.error(`Login failed: ${error}`);
