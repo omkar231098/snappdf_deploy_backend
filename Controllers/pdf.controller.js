@@ -1,13 +1,13 @@
 const getLogger = require('../Logger/logger'); // Update the path based on your actual file structure
 const logger = getLogger('auth'); // Provide the route name, e.g., 'auth' for authentication routes
 const { PdfModel } = require('../Model/pdf.model');
-// const { UserModel } = require('../Model/user.model');
+const { UserModel } = require('../Model/user.model');
 
 const PDFDocument = require('pdfkit');
 
 
 const CreatePDF = async (req, res) => {
-  // const userID = req.userId;
+  const userID = req.userId;
 
   try {
     const { name, age, address } = req.body;
@@ -32,10 +32,10 @@ const CreatePDF = async (req, res) => {
 
    
       // Save PDF data to MongoDB
-      const pdf = new PdfModel({ name, age, address, photo: pdfBuffer.toString('base64') });
+      const pdf = new PdfModel({ name, age, address, photo: pdfBuffer.toString('base64') ,  user: userID,});
       await pdf.save();
 
-     
+      await UserModel.findByIdAndUpdate(userID, { $push: { pdfs: pdf._id } });
       // Update the user's pdfs array with the new PDF
      
       
