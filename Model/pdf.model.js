@@ -10,7 +10,7 @@ const PdfSchema = new mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "User",
   },
-  photo: { type: String, required: true },
+  photo: { type: String, required: false },
 });
 
 const PdfModel = mongoose.model("Pdf", PdfSchema);
